@@ -55,6 +55,10 @@ const Title = styled.span`
 const ItemContainer = styled.div`
   margin: 10px 0px;
   font-size: 12px;
+  height: 20px;
+  width: 100%;
+  align-items: center;
+  display: flex;
 `;
 
 const Item = styled.span``;
@@ -104,6 +108,23 @@ const Series = styled.div`
 `;
 
 const SeriesTitle = styled.span``;
+
+const CompanyLogo = styled.div`
+  background-image: url(${(props) => props.imgURL});
+  height: 25px;
+  width: 50px;
+  border: white 2px solid;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
+  border-radius: 2px;
+  background-color: white;
+`;
+
+const CompanyName = styled.span`
+  border: white solid 1px;
+  padding: 2px 4px;
+`;
 
 export default ({
   location: { pathname },
@@ -165,20 +186,26 @@ export default ({
             <Item>
               {result.release_date
                 ? result.release_date.substr(0, 4)
-                : result.first_air_date.substr(0, 4)}
+                : result.first_air_date
+                ? result.first_air_date.substr(0, 4)
+                : "null"}
             </Item>
             <Divider>•</Divider>
             <Item>
               {result.runtime ? result.runtime : result.episode_run_time[0]} min
             </Item>
-            <Divider>•</Divider>
+
             <Item>
-              {result.genres &&
-                result.genres.map((genre, index) =>
-                  index !== result.genres.length - 1
-                    ? ` ${genre.name} /`
-                    : ` ${genre.name}`
-                )}
+              {result.genres && result.genres.length > 0 && (
+                <>
+                  <Divider>•</Divider>
+                  {result.genres.map((genre, index) =>
+                    index !== result.genres.length - 1
+                      ? ` ${genre.name} /`
+                      : ` ${genre.name}`
+                  )}
+                </>
+              )}
             </Item>
 
             {result.imdb_id && (
@@ -191,6 +218,24 @@ export default ({
                 </Item>
               </>
             )}
+            {console.log(result.production_companies)}
+            {result.production_companies &&
+              result.production_companies.length > 0 &&
+              (result.production_companies[0].logo_path ? (
+                <>
+                  <Divider>•</Divider>
+                  <CompanyLogo
+                    imgURL={`https://image.tmdb.org/t/p/w500${result.production_companies[0].logo_path}`}
+                  ></CompanyLogo>
+                </>
+              ) : result.production_companies[0].name ? (
+                <>
+                  <Divider>•</Divider>
+                  <CompanyName>
+                    {result.production_companies[0].name}
+                  </CompanyName>
+                </>
+              ) : null)}
           </ItemContainer>
           <Overview>{result.overview}</Overview>
           <VideoContainer>
@@ -222,9 +267,10 @@ export default ({
               ></Video>
             )}
           </VideoContainer>
-          <SeriesContainer id="series">
-            {result.seasons &&
-              result.seasons.map((movie) => (
+
+          {result.seasons && result.seasons.length > 0 && (
+            <SeriesContainer id="series">
+              {result.seasons.map((movie) => (
                 <div>
                   <SeriesTitle>{movie.name}</SeriesTitle>
                   {movie.poster_path ? (
@@ -238,7 +284,8 @@ export default ({
                   )}
                 </div>
               ))}
-          </SeriesContainer>
+            </SeriesContainer>
+          )}
         </Data>
       </Content>
     </Container>

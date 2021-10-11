@@ -27,7 +27,7 @@
     "deploy": "gh-pages -d build",
     "predeploy": "npm run build"
   },
-  "homepage": "https://rjsgn1209.github.io/movie_app_2021",
+  "homepage": "https://rjsgn1209.github.io/nomflex",
   "eslintConfig": {
     "extends": [
       "react-app",
